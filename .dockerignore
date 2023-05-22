@@ -1,0 +1,7 @@
+dist
+node_modules
+backups
+README.md
+.git
+.gitignore
+.env

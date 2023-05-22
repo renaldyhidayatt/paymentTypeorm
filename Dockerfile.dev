@@ -1,0 +1,20 @@
+# STAGE ONE
+FROM node:18.16.0-alpine AS node
+WORKDIR /app
+COPY package*.json \
+    .editorconfig \
+    .eslintignore \
+    .eslintrc \
+    .prettierrc \
+    ./
+COPY . ./
+RUN npm install
+
+
+# STAGE THREE
+FROM node:18.16.0-alpine
+WORKDIR /app
+COPY --from=node /app ./
+ENV NODE_ENV="development"
+EXPOSE 3000
+CMD ["npm", "run", "dev"]

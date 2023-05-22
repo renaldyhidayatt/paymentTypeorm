@@ -1,0 +1,66 @@
+version: '3.8'
+services:
+  # webapp config
+  web:
+    container_name: express_app
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    environment:
+      - PG_HOST=db
+      - PG_USERNAME=rust
+      - PG_PASSWORD=rust
+      - PG_DATABASE=payment
+      - PG_PORT=5432
+      - ACCESS_TOKEN_SECRET=a9b28bb5ba43c098c84a2ba8aa9afd
+      - REFRESH_TOKEN_SECRET=022bdb47d73054581388d1a3f88d91
+      - SG_SECRET=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
+      - URL_DEV=http://localhost:3000
+    networks:
+      express_network:
+  db:
+    container_name: pg_database
+    restart: always
+    image: postgres:14.7-alpine3.17
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=payment
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      express_network: # dbadmin config
+  dashboard:
+    container_name: pg_admin
+    restart: always
+    image: dpage/pgadmin4:2023-04-04-1
+    volumes:
+      - pgadmin:/var/lib/pgadmin/data
+    depends_on:
+      - db
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=rusty@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=rust
+    ports:
+      - 8080:80
+    networks:
+      express_network:
+
+
+volumes:
+  pgdata:
+  pgadmin:
+
+
+networks:
+  express_network:
