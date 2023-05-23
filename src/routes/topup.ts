@@ -5,27 +5,29 @@ import { authJwt } from '../middlewares/auth';
 import { roleJwt } from '../middlewares/role';
 
 const router: Router = express.Router();
+const Topup = new topupController();
+
 
 router.post(
   '/topup',
   [authJwt(), ...topupValidator()],
-  new topupController().createTopup
+  Topup.createTopup
 );
-router.get('/topup', roleJwt(), new topupController().resultsTopup);
+router.get('/topup', roleJwt(), Topup.resultsTopup);
 router.get(
   '/topup/:id',
   [authJwt(), ...paramsValiator()],
-  new topupController().resultTopup
+  Topup.resultTopup
 );
 router.delete(
   '/topup/:id',
   [roleJwt(), ...paramsValiator()],
-  new topupController().deleteTopup
+  Topup.deleteTopup
 );
 router.put(
   '/topup/:id',
   [roleJwt(), ...paramsValiator(), ...topupValidator()],
-  new topupController().updateTopup
+  Topup.updateTopup
 );
 
 export default router;

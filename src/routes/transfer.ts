@@ -1,31 +1,17 @@
-import express, { Router } from 'express';
-import transferController from '../controllers/Transfer';
-import { paramsValiator, transferValidator } from '../utils/validator';
-import { authJwt } from '../middlewares/auth';
-import { roleJwt } from '../middlewares/role';
+import express, { Router } from 'express'
+import transferController from '../controllers/Transfer'
+import { paramsValiator, transferValidator } from '../utils/validator'
+import { authJwt } from '../middlewares/auth'
+import { roleJwt } from '../middlewares/role'
 
-const router: Router = express.Router();
+const Transfer = new transferController()
 
-router.post(
-  '/transfer',
-  [authJwt(), ...transferValidator()],
-  new transferController().createTransfer
-);
-router.get('/transfer', roleJwt(), new transferController().resultsTransfer);
-router.get(
-  '/transfer/:id',
-  [authJwt(), ...paramsValiator()],
-  new transferController().resultTransfer
-);
-router.delete(
-  '/transfer/:id',
-  [roleJwt(), ...paramsValiator()],
-  new transferController().deleteTransfer
-);
-router.put(
-  '/transfer/:id',
-  [roleJwt(), ...paramsValiator(), ...transferValidator()],
-  new transferController().updateTransfer
-);
+const router: Router = express.Router()
 
-export default router;
+router.post('/transfer', [authJwt(), ...transferValidator()], Transfer.createTransfer)
+router.get('/transfer', roleJwt(), Transfer.resultsTransfer)
+router.get('/transfer/:id', [authJwt(), ...paramsValiator()], Transfer.resultTransfer)
+router.delete('/transfer/:id', [roleJwt(), ...paramsValiator()], Transfer.deleteTransfer)
+router.put('/transfer/:id', [roleJwt(), ...paramsValiator(), ...transferValidator()], Transfer.updateTransfer)
+
+export default router

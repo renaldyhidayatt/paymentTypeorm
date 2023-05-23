@@ -1,35 +1,17 @@
-import express, { Router, Request, Response } from 'express';
-import userController from '../controllers/User';
-import { fileUpload } from '../utils/upload';
-import {
-  registerValidator,
-  loginValidator,
-  emailValidator,
-} from '../utils/validator';
+import express, { Router, Request, Response } from 'express'
+import { fileUpload } from '../utils/upload'
+import { registerValidator, loginValidator, emailValidator } from '../utils/validator'
+import UserController from '../controllers/User'
 
-const router: Router = express.Router();
+const User = new UserController()
 
-router.post(
-  '/user/register',
-  [...registerValidator(), fileUpload.fields([{ name: 'photo' }])],
-  new userController().register
-);
-router.post('/user/login', loginValidator(), new userController().login);
-router.get(
-  '/user/activation/:token',
-  emailValidator(),
-  new userController().activation
-);
-router.post('/user/resend-activation', new userController().resend);
-router.post(
-  '/user/forgot-password',
-  emailValidator(),
-  new userController().forgot
-);
-router.post(
-  '/user/reset-password/:token',
-  emailValidator(),
-  new userController().reset
-);
+const router: Router = express.Router()
 
-export default router;
+router.post('/user/register', [...registerValidator(), fileUpload.fields([{ name: 'photo' }])], User.register)
+router.post('/user/login', loginValidator(), User.login)
+router.get('/user/activation/:token', emailValidator(), User.activation)
+router.post('/user/resend-activation', User.resend)
+router.post('/user/forgot-password', emailValidator(), User.forgot)
+router.post('/user/reset-password/:token', emailValidator(), User.reset)
+
+export default router
